@@ -1,0 +1,2444 @@
+﻿
+
+Aplicativo "HerTech & Game" 
+
+I. Visão Geral da Solução:
+Tipo de Aplicativo: Híbrido (Mobile + Web)
+Objetivo: Maior alcance, flexibilidade e acessibilidade para as usuárias.
+
+II. Tecnologias:
+Frontend:
+Mobile: React Native (compartilhamento de código entre iOS e Android)
+Web: React (interfaces interativas e responsivas)
+Linguagem: JavaScript
+Backend:
+Plataforma: Node.js (eficiência, escalabilidade e ideal para apps em tempo real)
+Framework: Express.js (criação de APIs RESTful)
+Banco de Dados:
+NoSQL: MongoDB (flexibilidade e escalabilidade para dados de usuários, cursos, vagas, etc.)
+SQL: PostgreSQL (robustez para operações transacionais e consultas complexas)
+Autenticação e Segurança:
+Autenticação: Firebase Authentication (fácil integração com email, redes sociais)
+Gerenciamento de Sessões: JWT (JSON Web Tokens)
+Serviços de Notificações:
+Firebase Cloud Messaging (FCM)
+Moderação e Análise de Conteúdo:
+Análise de Sentimento: Google Cloud Natural Language API
+Moderação: Perspective API (Jigsaw/Google)
+Hospedagem e Infraestrutura:
+PaaS: Heroku (implantação, gestão e escalabilidade)
+IaaS: AWS (Amazon Web Services) - S3 (armazenamento), EC2 (computação), RDS (banco de dados relacional)
+
+III. Funcionalidades:
+Tela Inicial e Login/Cadastro:
+Formulários: React Native (mobile) e React (web)
+Autenticação: Firebase Authentication
+Dashboard Principal:
+Notificações: Componentes React para exibição dinâmica
+Navegação: React Navigation (mobile) e React Router (web)
+Safe Zone:
+Chat e Grupos: WebSockets (Socket.io) para comunicação em tempo real
+Moderação: Google Cloud Natural Language API
+Portal de Educação:
+Cursos: Integração com plataformas como Teachable/Udemy ou solução própria com streaming de vídeo
+Workshops/Webinars: Zoom ou WebRTC para transmissões ao vivo
+Bolsa de Empregos e Programa de Mentoria:
+Vagas: Banco de dados relacional para armazenar e filtrar vagas
+Mentoria: Sistema de matching baseado em perfis e preferências
+Comunidade:
+Histórias: CMS (Strapi ou Contentful) para gestão de conteúdo
+Eventos: Integração com plataformas de eventos ou solução própria
+Perfil e Recompensas:
+Perfis: Armazenamento no MongoDB/PostgreSQL
+Recompensas: Sistema de gamificação (ex: react-native-game-engine)
+
+IV. Documentação e Exemplos:
+Documentação das APIs: Detalhes sobre endpoints, parâmetros e exemplos de uso.
+V. Observações:
+Código Completo: O código fornecido é um exemplo inicial. O desenvolvimento completo exige implementação detalhada de cada funcionalidade.
+Testes: Implementar testes unitários, de integração e de segurança para garantir a qualidade do app.
+Boas Práticas: Utilizar versionamento de código (Git) e ferramentas de documentação para facilitar o desenvolvimento e manutenção.
+Organizando o código:
+Separação de Responsabilidades: Dividir o código em módulos e componentes reutilizáveis, organizados por funcionalidade.
+Pastas: Criar pastas para frontend, backend, banco de dados, testes, etc.
+Nomenclatura: Usar nomes descritivos para variáveis, funções e arquivos.
+Comentários: Adicionar comentários para explicar o código e facilitar a compreensão.
+Com um código bem organizado e documentado, o desenvolvimento do app "HerTech & Game" será mais eficiente e a manutenção do projeto será facilitada no longo prazo.
+
+
+
+
+
+Para facilitar o entendimento e a implementação do código, vamos dividi-lo em pastas e arquivos, seguindo uma estrutura organizada:
+
+Estrutura de Pastas:
+hertech-game/
+├── backend/
+│   ├── models/
+│   │   ├── User.js
+│   │   ├── Group.js
+│   │   ├── Course.js
+│   │   ├── Job.js
+│   │   ├── Mentor.js
+│   │   ├── Story.js
+│   │   └── Event.js
+│   ├── controllers/
+│   │   ├── UserController.js
+│   │   ├── GroupController.js
+│   │   ├── CourseController.js
+│   │   ├── JobController.js
+│   │   ├── MentorController.js
+│   │   ├── StoryController.js
+│   │   ├── EventController.js
+│   │   └── NotificationController.js
+│   ├── routes/
+│   │   ├── userRoutes.js
+│   │   ├── groupRoutes.js
+│   │   ├── courseRoutes.js
+│   │   ├── jobRoutes.js
+│   │   ├── mentorRoutes.js
+│   │   ├── storyRoutes.js
+│   │   ├── eventRoutes.js
+│   │   └── notificationRoutes.js
+│   ├── services/
+│   │   └── contentModeration.js
+│   ├── middleware/
+│   │   └── authMiddleware.js
+│   ├── app.js
+│   └── server.js
+├── frontend/
+│   ├── screens/
+│   │   ├── HomeScreen.js
+│   │   ├── LoginScreen.js
+│   │   ├── RegisterScreen.js
+│   │   ├── DashboardScreen.js
+│   │   ├── SafeZoneScreen.js
+│   │   ├── ProfileScreen.js
+│   │   ├── EducationScreen.js
+│   │   ├── JobsScreen.js
+│   │   ├── MentorshipScreen.js
+│   │   ├── CommunityScreen.js
+│   │   ├── ChatScreen.js
+│   │   └── NotificationsScreen.js
+│   ├── components/
+│   │   ├── Button.js
+│   │   ├── Input.js
+│   │   ├── Card.js
+│   │   └── ...
+│   ├── navigation/
+│   │   ├── AuthNavigator.js
+│   │   └── AppNavigator.js
+│   ├── App.js
+│   └── ...
+└── …
+
+
+Parte 1: Backend (Node.js)
+1. backend/server.js:
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
+const userRoutes = require('./routes/userRoutes');
+const groupRoutes = require('./routes/groupRoutes');
+const courseRoutes = require('./routes/courseRoutes');
+const jobRoutes = require('./routes/jobRoutes');
+const mentorRoutes = require('./routes/mentorRoutes');
+const storyRoutes = require('./routes/storyRoutes');
+const eventRoutes = require('./routes/eventRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+
+const app = express();
+const port = process.env.PORT || 3000;
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/hertech-game';
+
+// Middleware
+app.use(bodyParser.json());
+app.use(cors());
+
+// Rotas
+app.use('/api/users', userRoutes);
+app.use('/api/groups', groupRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/jobs', jobRoutes);
+app.use('/api/mentors', mentorRoutes);
+app.use('/api/stories', storyRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api/notifications', notificationRoutes);
+
+// Conexão com o MongoDB
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log('Conectado ao MongoDB');
+        app.listen(port, () => {
+            console.log(`Servidor iniciado na porta ${port}`);
+        });
+    })
+    .catch(err => {
+        console.error('Erro ao conectar ao MongoDB:', err.message);
+    });
+Use code with caution.
+JavaScript
+
+2. backend/models/User.js:
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    // ... outros campos do perfil (nome, username, etc.)
+});
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
+Use code with caution.
+JavaScript
+
+3. backend/models/Group.js:
+const mongoose = require('mongoose');
+
+const groupSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    description: String,
+    members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    // ... outros campos do grupo (tipo de jogo, etc.)
+});
+
+const Group = mongoose.model('Group', groupSchema);
+
+module.exports = Group;
+Use code with caution.
+JavaScript
+Parte 2: Backend (Node.js) - Continuação
+
+4. backend/controllers/UserController.js:
+const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+exports.register = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Verificar se o email já está cadastrado
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Email já cadastrado' });
+        }
+
+        // Criptografar a senha
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // Criar novo usuário
+        const newUser = new User({
+            email,
+            password: hashedPassword,
+            // ... outros campos do perfil
+        });
+
+        await newUser.save();
+        res.status(201).json({ message: 'Usuário cadastrado com sucesso' });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+};
+
+exports.login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Verificar se o usuário existe
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: 'Credenciais inválidas' });
+        }
+
+        // Comparar senha
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Credenciais inválidas' });
+        }
+
+        // Gerar token JWT
+        const token = jwt.sign({ userId: user._id }, 'your-secret-key', { expiresIn: '1h' }); 
+        res.json({ token });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro no servidor' });
+    }
+};
+Use code with caution.
+JavaScript
+
+5. backend/routes/userRoutes.js:
+const express = require('express');
+const router = express.Router();
+const UserController = require('../controllers/UserController');
+
+router.post('/register', UserController.register);
+router.post('/login', UserController.login);
+
+module.exports = router;
+Use code with caution.
+JavaScript
+Parte 3: Backend (Node.js) - Continuação
+
+6. backend/middleware/authMiddleware.js:
+const jwt = require('jsonwebtoken');
+
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (token == null) {
+        return res.status(401).json({ message: 'Token não fornecido' });
+    }
+
+    jwt.verify(token, 'your-secret-key', (err, user) => {
+        if (err) {
+            return res.status(403).json({ message: 'Token inválido' });
+        }
+        req.user = user;
+        next();
+    });
+};
+
+module.exports = authenticateToken;
+Use code with caution.
+JavaScript
+7. Exemplo de Rota Protegida (backend/routes/groupRoutes.js):
+const express = require('express');
+const router = express.Router();
+const GroupController = require('../controllers/GroupController'); 
+const authenticateToken = require('../middleware/authMiddleware');
+
+router.post('/', authenticateToken, GroupController.createGroup);
+router.get('/', authenticateToken, GroupController.getAllGroups);
+router.get('/:id', authenticateToken, GroupController.getGroupById);
+
+module.exports = router;
+Use code with caution.
+JavaScript
+
+Parte 4: Frontend (React Native)
+1. frontend/App.js:
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from './screens/HomeScreen';
+import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen';
+// ... Importe outras telas
+
+const Stack = createNativeStackNavigator();
+
+const App = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        {/* ... Defina as rotas para outras telas */}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default App;
+Use code with caution.
+JavaScript
+2. frontend/screens/HomeScreen.js:
+import React from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
+
+const HomeScreen = ({ navigation }) => {
+  return (
+    <View style={styles.container}>
+      <Text>Bem-vinda ao HerTech & Game!</Text>
+      <Button title="Login" onPress={() => navigation.navigate('Login')} />
+      <Button title="Cadastro" onPress={() => navigation.navigate('Register')} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+export default HomeScreen;
+Use code with caution.
+JavaScript
+
+Parte 5: Frontend (React Native) - Continuação
+3. frontend/screens/LoginScreen.js:
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+
+const LoginScreen = ({ navigation }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/api/users/login', { email, password }); 
+      const token = response.data.token;
+      await AsyncStorage.setItem('token', token);
+      navigation.navigate('Dashboard'); // Navega para a tela Dashboard após login
+    } catch (error) {
+      Alert.alert('Erro', 'Credenciais inválidas!');
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Login</Text>
+      <TextInput 
+        style={styles.input} 
+        placeholder="Email" 
+        onChangeText={setEmail} 
+        value={email} 
+      />
+      <TextInput 
+        style={styles.input} 
+        placeholder="Senha" 
+        onChangeText={setPassword} 
+        value={password} 
+        secureTextEntry
+      />
+      <Button title="Entrar" onPress={handleLogin} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    padding: 10,
+    marginBottom: 10,
+    width: '100%',
+  },
+});
+
+export default LoginScreen;
+Use code with caution.
+JavaScript
+Observações:
+Substitua 'http://localhost:3000/api/users/login' pelo endereço da sua API.
+A tela de cadastro (RegisterScreen.js) terá uma estrutura similar ao LoginScreen.js, com os campos de cadastro e a requisição para a rota /register da API.
+Implemente as demais telas e funcionalidades (Safe Zone, Cursos, etc.) com componentes e lógica adequados.
+Próximos Passos:
+Implemente os controllers para as demais funcionalidades (Grupos, Cursos, etc.).
+Implemente o serviço de moderação de conteúdo contentModeration.js.
+Implemente o serviço de notificações (utilizando Firebase Cloud Messaging).
+Crie as demais telas do frontend e integre com a API.
+Implemente testes unitários e de integração.
+Lembre-se: Este código é um guia inicial. A implementação completa do app "HerTech & Game" exigirá mais código e detalhes específicos para cada funcionalidade.
+
+User
+continue a desnsenvoler os prximos passos, use a quantidade de caracteres necessarios e pode dividir em partes
+
+
+Continuando o Desenvolvimento do App "HerTech & Game"
+Vamos continuar desenvolvendo as funcionalidades do backend, implementando os controllers, serviços e os modelos de dados para as outras seções do app.
+
+Parte 6: Backend (Node.js) - Controllers
+
+1. backend/controllers/GroupController.js:
+const Group = require('../models/Group');
+
+exports.createGroup = async (req, res) => {
+    try {
+        const { name, description } = req.body;
+        const userId = req.user.userId; // Obtém o ID do usuário do token JWT
+
+        const newGroup = new Group({
+            name,
+            description,
+            members: [userId], // Adiciona o criador como primeiro membro
+        });
+
+        await newGroup.save();
+        res.status(201).json({ message: 'Grupo criado com sucesso', group: newGroup });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro ao criar grupo' });
+    }
+};
+
+exports.getAllGroups = async (req, res) => {
+    try {
+        const groups = await Group.find().populate('members', 'email'); // Popula os membros com apenas o email
+        res.status(200).json(groups);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro ao buscar grupos' });
+    }
+};
+
+exports.getGroupById = async (req, res) => {
+    try {
+        const group = await Group.findById(req.params.id).populate('members', 'email');
+        if (!group) {
+            return res.status(404).json({ message: 'Grupo não encontrado' });
+        }
+        res.status(200).json(group);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro ao buscar grupo' });
+    }
+};
+
+// Adicione outras funções para atualizar, deletar e gerenciar membros de um grupo
+
+JavaScript
+2. backend/controllers/CourseController.js:
+const Course = require('../models/Course');
+const { publishMessage } = require('../services/notificationService'); // Importe o serviço de notificações
+
+exports.createCourse = async (req, res) => {
+    try {
+        const { title, description, instructor, duration, imageUrl, videoUrl } = req.body;
+
+        const newCourse = new Course({
+            title,
+            description,
+            instructor,
+            duration,
+            imageUrl,
+            videoUrl
+        });
+
+        await newCourse.save();
+        res.status(201).json({ message: 'Curso criado com sucesso', course: newCourse });
+
+        // Envia notificação para usuárias sobre o novo curso (implementação do serviço de notificações)
+        await publishMessage('new-course', { title: newCourse.title }); 
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro ao criar curso' });
+    }
+};
+
+exports.getAllCourses = async (req, res) => {
+    try {
+        const courses = await Course.find();
+        res.status(200).json(courses);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro ao buscar cursos' });
+    }
+};
+
+exports.getCourseById = async (req, res) => {
+    try {
+        const course = await Course.findById(req.params.id);
+        if (!course) {
+            return res.status(404).json({ message: 'Curso não encontrado' });
+        }
+        res.status(200).json(course);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro ao buscar curso' });
+    }
+};
+
+// Adicione outras funções para atualizar, deletar e gerenciar cursos
+
+JavaScript
+
+Parte 7: Backend (Node.js) - Serviços
+1. backend/services/contentModeration.js:
+
+const language = require('@google-cloud/language');
+const client = new language.LanguageServiceClient();
+
+async function analyzeSentiment(text) {
+    const document = {
+        content: text,
+        type: 'PLAIN_TEXT',
+    };
+
+    try {
+        const [result] = await client.analyzeSentiment({ document });
+        const sentiment = result.documentSentiment;
+        return sentiment;
+    } catch (error) {
+        console.error('Erro ao analisar o sentimento:', error);
+        throw new Error('Erro na análise de sentimento'); 
+    }
+}
+
+module.exports = { analyzeSentiment };
+
+
+
+2. backend/services/notificationService.js (utilizando Firebase Cloud Messaging):
+const admin = require('firebase-admin');
+
+async function publishMessage(topic, messageData) {
+    try {
+        const message = {
+            topic: topic,
+            notification: {
+                title: 'HerTech & Game',
+                body: messageData.title || messageData.message || 'Nova notificação!'
+            },
+            // ... outros dados da notificação
+        };
+
+        await admin.messaging().send(message);
+        console.log('Mensagem enviada com sucesso para o tópico:', topic);
+    } catch (error) {
+        console.error('Erro ao enviar a notificação:', error);
+    }
+}
+
+module.exports = { publishMessage };
+
+Observações:
+Importe e utilize o serviço de moderação de conteúdo nos controllers que gerenciam a criação de mensagens ou conteúdo gerado por usuárias (ex: chat, fóruns, comentários).
+Configure o Firebase Cloud Messaging no seu projeto do Firebase e inclua as credenciais no arquivo serviceAccountKey.json.
+Lembre-se de adaptar o código dos controllers e services de acordo com as suas necessidades e a estrutura do seu projeto.
+Próximos Passos:
+Implemente os controllers para Jobs, Mentors, Stories e Events.
+Crie os modelos de dados para as seções que ainda não possuem (Job, Mentor, Story, Event, Notification).
+Desenvolva as telas do frontend para as funcionalidades restantes.
+Integre o frontend com as novas rotas e controllers do backend.
+Implemente testes unitários e de integração para garantir a qualidade do código.
+
+
+Implementando os Próximos Passos do App "HerTech & Game"
+Vamos continuar construindo o app "HerTech & Game", implementando os controllers para Jobs, Mentors, Stories, Events, e os modelos de dados para as seções que ainda não os possuem, além de configurar o frontend para interagir com essas novas funcionalidades.
+
+Parte 8: Backend (Node.js) - Controllers e Modelos
+
+1. backend/controllers/JobController.js:
+
+const Job = require('../models/Job');
+const { publishMessage } = require('../services/notificationService'); // Importe o serviço de notificações
+
+exports.createJob = async (req, res) => {
+  try {
+    const { title, description, company, location, applyLink } = req.body;
+
+    const newJob = new Job({
+      title,
+      description,
+      company,
+      location,
+      applyLink
+    });
+
+    await newJob.save();
+    res.status(201).json({ message: 'Vaga criada com sucesso', job: newJob });
+
+    // Notifica as usuárias sobre a nova vaga (implementação do serviço de notificações)
+    await publishMessage('new-job', { title: newJob.title, company: newJob.company });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao criar vaga' });
+  }
+};
+
+exports.getAllJobs = async (req, res) => {
+  try {
+    const jobs = await Job.find();
+    res.status(200).json(jobs);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao buscar vagas' });
+  }
+};
+
+exports.getJobById = async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.id);
+    if (!job) {
+      return res.status(404).json({ message: 'Vaga não encontrada' });
+    }
+    res.status(200).json(job);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao buscar vaga' });
+  }
+};
+
+// Adicione outras funções para atualizar, deletar e gerenciar vagas
+
+2. backend/models/Job.js:
+
+const mongoose = require('mongoose');
+
+const jobSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  company: { type: String, required: true },
+  location: { type: String, required: true },
+  applyLink: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Job = mongoose.model('Job', jobSchema);
+
+module.exports = Job;
+
+3. backend/controllers/MentorController.js:
+const Mentor = require('../models/Mentor');
+
+exports.createMentor = async (req, res) => {
+  try {
+    const { name, bio, expertise, contact, availability } = req.body;
+
+    const newMentor = new Mentor({
+      name,
+      bio,
+      expertise,
+      contact,
+      availability,
+    });
+
+    await newMentor.save();
+    res.status(201).json({ message: 'Mentor criado com sucesso', mentor: newMentor });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao criar mentor' });
+  }
+};
+
+exports.getAllMentors = async (req, res) => {
+  try {
+    const mentors = await Mentor.find();
+    res.status(200).json(mentors);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao buscar mentores' });
+  }
+};
+
+exports.getMentorById = async (req, res) => {
+  try {
+    const mentor = await Mentor.findById(req.params.id);
+    if (!mentor) {
+      return res.status(404).json({ message: 'Mentor não encontrado' });
+    }
+    res.status(200).json(mentor);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao buscar mentor' });
+  }
+};
+
+// Adicione outras funções para atualizar, deletar e gerenciar mentores
+
+4. backend/models/Mentor.js:
+const mongoose = require('mongoose');
+
+const mentorSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  bio: { type: String, required: true },
+  expertise: { type: String, required: true },
+  contact: { type: String, required: true }, // Email, link para LinkedIn, etc.
+  availability: { type: String, required: true }, // Horários disponíveis para mentoria
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Mentor = mongoose.model('Mentor', mentorSchema);
+
+module.exports = Mentor;
+Use code with caution.
+JavaScript
+Parte 9: Backend (Node.js) - Controllers e Modelos (Continuação)
+5. backend/controllers/StoryController.js:
+const Story = require('../models/Story');
+const { analyzeSentiment } = require('../services/contentModeration'); // Importe o serviço de moderação
+
+exports.createStory = async (req, res) => {
+  try {
+    const { title, content, author } = req.body;
+    const userId = req.user.userId; // Obtém o ID do usuário do token JWT
+
+    // Moderação de conteúdo
+    const sentiment = await analyzeSentiment(content);
+    if (sentiment.score < -0.5) {
+      return res.status(400).json({ message: 'Conteúdo inadequado detectado. Por favor, revise sua história.' });
+    }
+
+    const newStory = new Story({
+      title,
+      content,
+      author: userId // Associa a história ao usuário logado
+    });
+
+    await newStory.save();
+    res.status(201).json({ message: 'História criada com sucesso', story: newStory });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao criar história' });
+  }
+};
+
+exports.getAllStories = async (req, res) => {
+  try {
+    const stories = await Story.find().populate('author', 'email'); // Popula o campo "author" com o email do usuário
+    res.status(200).json(stories);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao buscar histórias' });
+  }
+};
+
+exports.getStoryById = async (req, res) => {
+  try {
+    const story = await Story.findById(req.params.id).populate('author', 'email');
+    if (!story) {
+      return res.status(404).json({ message: 'História não encontrada' });
+    }
+    res.status(200).json(story);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao buscar história' });
+  }
+};
+
+// Adicione outras funções para atualizar, deletar e gerenciar histórias
+Use code with caution.
+JavaScript
+6. backend/models/Story.js:
+const mongoose = require('mongoose');
+
+const storySchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  content: { type: String, required: true },
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Referência ao modelo User
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Story = mongoose.model('Story', storySchema);
+
+module.exports = Story;
+Use code with caution.
+JavaScript
+7. backend/controllers/EventController.js:
+const Event = require('../models/Event');
+const { publishMessage } = require('../services/notificationService'); // Importe o serviço de notificações
+
+exports.createEvent = async (req, res) => {
+  try {
+    const { title, description, date, location, imageUrl } = req.body;
+
+    const newEvent = new Event({
+      title,
+      description,
+      date,
+      location,
+      imageUrl
+    });
+
+    await newEvent.save();
+    res.status(201).json({ message: 'Evento criado com sucesso', event: newEvent });
+
+    // Notifica as usuárias sobre o novo evento
+    await publishMessage('new-event', { title: newEvent.title, date: newEvent.date });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao criar evento' });
+  }
+};
+
+exports.getAllEvents = async (req, res) => {
+  try {
+    const events = await Event.find();
+    res.status(200).json(events);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao buscar eventos' });
+  }
+};
+
+exports.getEventById = async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ message: 'Evento não encontrado' });
+    }
+    res.status(200).json(event);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao buscar evento' });
+  }
+};
+
+// Adicione outras funções para atualizar, deletar e gerenciar eventos
+
+8. backend/models/Event.js:
+
+const mongoose = require('mongoose');
+
+const eventSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  date: { type: Date, required: true },
+  location: { type: String, required: true }, // Pode ser um endereço físico ou um link para um evento online
+  imageUrl: { type: String },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Event = mongoose.model('Event', eventSchema);
+
+module.exports = Event;
+
+9. backend/models/Notification.js:
+const mongoose = require('mongoose');
+
+const notificationSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  type: { type: String, required: true }, // Ex: 'new-course', 'new-job', 'mentor-request'
+  content: { type: String, required: true }, // Descrição da notificação (ex: "Novo curso disponível: Introdução a Unity")
+  read: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Notification = mongoose.model('Notification', notificationSchema);
+
+module.exports = Notification;
+
+Parte 10: Frontend (React Native) - Implementação de Telas
+1. frontend/screens/JobsScreen.js:
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import axios from 'axios';
+
+const JobsScreen = () => {
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/jobs'); // Substitua pelo endereço da sua API
+        setJobs(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar vagas:', error);
+      }
+    };
+    fetchJobs();
+  }, []);
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity onPress={() => {/* Lógica para navegar para a tela de detalhes da vaga */}}>
+      <View style={styles.jobItem}>
+        <Text style={styles.jobTitle}>{item.title}</Text>
+        <Text>{item.company} - {item.location}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>Bolsa de Empregos</Text>
+      <FlatList 
+        data={jobs}
+        renderItem={renderItem}
+        keyExtractor={item => item._id} 
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  jobItem: {
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  jobTitle: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginBottom: 5,
+  },
+});
+
+export default JobsScreen;
+
+Parte 11: Frontend (React Native) - Implementação de Telas (Continuação)
+2. frontend/screens/MentorshipScreen.js:
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import axios from 'axios';
+
+const MentorshipScreen = () => {
+  const [mentors, setMentors] = useState([]);
+
+  useEffect(() => {
+    const fetchMentors = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/mentors'); // Substitua pelo endereço da sua API
+        setMentors(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar mentores:', error);
+      }
+    };
+    fetchMentors();
+  }, []);
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity onPress={() => {/* Lógica para navegar para a tela de perfil do mentor */}}>
+      <View style={styles.mentorItem}>
+        <Text style={styles.mentorName}>{item.name}</Text>
+        <Text>{item.expertise}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>Programa de Mentoria</Text>
+      <FlatList 
+        data={mentors}
+        renderItem={renderItem}
+        keyExtractor={item => item._id} 
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  mentorItem: {
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  mentorName: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginBottom: 5,
+  },
+});
+
+export default MentorshipScreen;
+
+Parte 12: Frontend (React Native) - Implementação de Telas (Continuação)
+3. frontend/screens/CommunityScreen.js:
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import axios from 'axios';
+
+const CommunityScreen = () => {
+  const [stories, setStories] = useState([]);
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    const fetchStories = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/stories'); // Substitua pelo endereço da sua API
+        setStories(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar histórias:', error);
+      }
+    };
+
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/events'); // Substitua pelo endereço da sua API
+        setEvents(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar eventos:', error);
+      }
+    };
+
+    fetchStories();
+    fetchEvents();
+  }, []);
+
+  const renderStoryItem = ({ item }) => (
+    <TouchableOpacity onPress={() => {/* Lógica para navegar para a tela de detalhes da história */}}>
+      <View style={styles.storyItem}>
+        <Text style={styles.storyTitle}>{item.title}</Text>
+        <Text>{item.author.email}</Text> 
+      </View>
+    </TouchableOpacity>
+  );
+
+  const renderEventItem = ({ item }) => (
+    <TouchableOpacity onPress={() => {/* Lógica para navegar para a tela de detalhes do evento */}}>
+      <View style={styles.eventItem}>
+        <Text style={styles.eventTitle}>{item.title}</Text>
+        <Text>{item.date} - {item.location}</Text> 
+      </View>
+    </TouchableOpacity>
+  );
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>Comunidade</Text>
+
+      <Text style={styles.sectionHeader}>Histórias Inspiradoras</Text>
+      <FlatList 
+        data={stories}
+        renderItem={renderStoryItem}
+        keyExtractor={item => item._id} 
+      />
+
+      <Text style={styles.sectionHeader}>Eventos</Text>
+      <FlatList 
+        data={events}
+        renderItem={renderEventItem}
+        keyExtractor={item => item._id} 
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  sectionHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  storyItem: {
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  storyTitle: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginBottom: 5,
+  },
+  eventItem: {
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  eventTitle: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginBottom: 5,
+  },
+});
+
+export default CommunityScreen;
+
+Parte 13: Frontend (React Native) - Navegação e Integração
+1. frontend/navigation/AppNavigator.js:
+
+import React from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import DashboardScreen from '../screens/DashboardScreen';
+import SafeZoneScreen from '../screens/SafeZoneScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import EducationScreen from '../screens/EducationScreen';
+import JobsScreen from '../screens/JobsScreen';
+import MentorshipScreen from '../screens/MentorshipScreen';
+import CommunityScreen from '../screens/CommunityScreen';
+// ... Importe outras telas 
+
+// Ícones para as abas (utilize uma biblioteca de ícones como react-native-vector-icons)
+import Icon from 'react-native-vector-icons/Ionicons';
+
+const Tab = createBottomTabNavigator();
+
+const AppNavigator = () => {
+  return (
+    <Tab.Navigator 
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === 'Dashboard') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Safe Zone') {
+            iconName = focused ? 'game-controller' : 'game-controller-outline';
+          } else if (route.name === 'Profile') {
+            iconName = focused ? 'person' : 'person-outline';
+          } else if (route.name === 'Education') {
+            iconName = focused ? 'school' : 'school-outline';
+          } else if (route.name === 'Jobs') {
+            iconName = focused ? 'briefcase' : 'briefcase-outline';
+          } else if (route.name === 'Mentorship') {
+            iconName = focused ? 'people' : 'people-outline';
+          } else if (route.name === 'Community') {
+            iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
+          } 
+
+          return <Icon name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: 'blue', 
+        tabBarInactiveTintColor: 'gray',
+      })}
+    >
+      <Tab.Screen name="Dashboard" component={DashboardScreen} />
+      <Tab.Screen name="Safe Zone" component={SafeZoneScreen} />
+      <Tab.Screen name="Education" component={EducationScreen} />
+      <Tab.Screen name="Jobs" component={JobsScreen} />
+      <Tab.Screen name="Mentorship" component={MentorshipScreen} />
+      <Tab.Screen name="Community" component={CommunityScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
+      {/* ... Adicione outras telas à navegação */}
+    </Tab.Navigator>
+  );
+};
+
+export default AppNavigator;
+Use code with caution.
+JavaScript
+2. Integre as telas de Jobs, Mentorship e Community no App.js:
+// ... outras importações
+import AppNavigator from './navigation/AppNavigator';
+
+const Stack = createNativeStackNavigator();
+
+const App = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        {/* ... outras telas */}
+        <Stack.Screen name="App" component={AppNavigator} options={{ headerShown: false }} /> 
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default App;
+
+Parte 14: Próximos Passos
+Completar Controllers: Implemente as funções de CRUD para os controllers de Jobs, Mentors, Stories e Events.
+Criar Telas: Desenvolva as telas para as funcionalidades de:
+Criar/editar histórias
+Criar/editar eventos
+Detalhes de cursos, vagas, mentores e histórias
+Chat da Safe Zone
+Notificações
+Implementar Sistema de Recompensas: Defina as regras de pontuação e badges, crie o modelo de dados e integre no frontend.
+Testes: Crie testes unitários e de integração para garantir a qualidade do código e a funcionalidade do app.
+Deploy: Publique a API backend em um serviço de hospedagem (Heroku, AWS) e o app mobile nas lojas de aplicativos (App Store e Google Play).
+
+Dando Continuidade ao Desenvolvimento do "HerTech & Game"
+Continuaremos a jornada de desenvolvimento do aplicativo "HerTech & Game", focando agora na complementação dos controllers, criação de telas adicionais no frontend e configuração da lógica para o sistema de recompensas.
+
+Parte 15: Backend (Node.js) - Completando Controllers
+Para cada um dos controllers (Jobs, Mentors, Stories e Events), implementaremos as funções de CRUD (Create, Read, Update, Delete) para garantir a gestão completa de cada tipo de dado no backend.
+
+1. backend/controllers/JobController.js (Complementação):
+// ... (código anterior)
+
+exports.updateJob = async (req, res) => {
+  try {
+    const updatedJob = await Job.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedJob) {
+      return res.status(404).json({ message: 'Vaga não encontrada' });
+    }
+    res.status(200).json({ message: 'Vaga atualizada com sucesso', job: updatedJob });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao atualizar vaga' });
+  }
+};
+
+exports.deleteJob = async (req, res) => {
+  try {
+    const deletedJob = await Job.findByIdAndDelete(req.params.id);
+    if (!deletedJob) {
+      return res.status(404).json({ message: 'Vaga não encontrada' });
+    }
+    res.status(200).json({ message: 'Vaga excluída com sucesso' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao excluir vaga' });
+  }
+};
+
+2. backend/controllers/MentorController.js (Complementação):
+// ... (código anterior)
+
+exports.updateMentor = async (req, res) => {
+  try {
+    const updatedMentor = await Mentor.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedMentor) {
+      return res.status(404).json({ message: 'Mentor não encontrado' });
+    }
+    res.status(200).json({ message: 'Mentor atualizado com sucesso', mentor: updatedMentor });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao atualizar mentor' });
+  }
+};
+
+exports.deleteMentor = async (req, res) => {
+  try {
+    const deletedMentor = await Mentor.findByIdAndDelete(req.params.id);
+    if (!deletedMentor) {
+      return res.status(404).json({ message: 'Mentor não encontrado' });
+    }
+    res.status(200).json({ message: 'Mentor excluído com sucesso' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao excluir mentor' });
+  }
+};
+
+3. backend/controllers/StoryController.js (Complementação):
+// ... (código anterior)
+
+exports.updateStory = async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    const userId = req.user.userId;
+    const storyId = req.params.id;
+
+    // Verifica se a história pertence ao usuário logado
+    const story = await Story.findOne({ _id: storyId, author: userId });
+    if (!story) {
+      return res.status(403).json({ message: 'Você não tem permissão para editar esta história.' });
+    }
+
+    // Moderação de conteúdo
+    const sentiment = await analyzeSentiment(content);
+    if (sentiment.score < -0.5) {
+      return res.status(400).json({ message: 'Conteúdo inadequado detectado. Por favor, revise sua história.' });
+    }
+
+    const updatedStory = await Story.findByIdAndUpdate(storyId, { title, content }, { new: true });
+    res.status(200).json({ message: 'História atualizada com sucesso', story: updatedStory });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao atualizar história' });
+  }
+};
+
+exports.deleteStory = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const storyId = req.params.id;
+
+    // Verifica se a história pertence ao usuário logado
+    const story = await Story.findOne({ _id: storyId, author: userId });
+    if (!story) {
+      return res.status(403).json({ message: 'Você não tem permissão para excluir esta história.' });
+    }
+
+    await Story.findByIdAndDelete(storyId);
+    res.status(200).json({ message: 'História excluída com sucesso' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao excluir história' });
+  }
+};
+Use code with caution.
+JavaScript
+4. backend/controllers/EventController.js (Complementação):
+// ... (código anterior)
+
+exports.updateEvent = async (req, res) => {
+  try {
+    const updatedEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedEvent) {
+      return res.status(404).json({ message: 'Evento não encontrado' });
+    }
+    res.status(200).json({ message: 'Evento atualizado com sucesso', event: updatedEvent });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao atualizar evento' });
+  }
+};
+
+exports.deleteEvent = async (req, res) => {
+  try {
+    const deletedEvent = await Event.findByIdAndDelete(req.params.id);
+    if (!deletedEvent) {
+      return res.status(404).json({ message: 'Evento não encontrado' });
+    }
+    res.status(200).json({ message: 'Evento excluído com sucesso' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao excluir evento' });
+  }
+};
+
+Parte 16: Frontend (React Native) - Criação de Telas Adicionais
+Vamos criar as telas para visualizar os detalhes de cursos, vagas, mentores e histórias, além de criar telas para gerenciar as histórias (criar e editar) e adicionar a funcionalidade de chat na Safe Zone.
+
+1. frontend/screens/CourseDetailsScreen.js:
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, Linking } from 'react-native';
+import axios from 'axios';
+
+const CourseDetailsScreen = ({ route }) => {
+  const { courseId } = route.params;
+  const [course, setCourse] = useState(null);
+
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/api/courses/${courseId}`); // Substitua pelo endereço da sua API
+        setCourse(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar detalhes do curso:', error);
+      }
+    };
+    fetchCourse();
+  }, []);
+
+  if (!course) {
+    return (
+      <View style={styles.container}>
+        <Text>Carregando detalhes do curso...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <ScrollView style={styles.container}>
+      <Image source={{ uri: course.imageUrl }} style={styles.image} /> 
+      <Text style={styles.title}>{course.title}</Text>
+      <Text style={styles.description}>{course.description}</Text>
+      <Text style={styles.instructor}>Instrutor: {course.instructor}</Text>
+      <Text style={styles.duration}>Duração: {course.duration}</Text>
+      {/* Botão para abrir o link do vídeo do curso */}
+      <Button title="Assistir Vídeo" onPress={() => Linking.openURL(course.videoUrl)} /> 
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  image: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  description: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  instructor: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  duration: {
+    fontSize: 16,
+    marginBottom: 20,
+  },
+});
+
+export default CourseDetailsScreen;
+
+2. frontend/screens/CreateStoryScreen.js:
+
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+
+const CreateStoryScreen = ({ navigation }) => {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+
+  const handleCreateStory = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token'); 
+      const response = await axios.post('http://localhost:3000/api/stories', { 
+        title, 
+        content 
+      }, {
+        headers: { Authorization: `Bearer ${token}` } 
+      });
+      Alert.alert('Sucesso', 'História criada com sucesso!');
+      navigation.navigate('Community'); 
+    } catch (error) {
+      Alert.alert('Erro', error.response.data.message || 'Erro ao criar história.');
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Criar História</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Título"
+        value={title}
+        onChangeText={setTitle}
+      />
+      <TextInput
+        style={styles.textArea}
+        placeholder="Compartilhe sua história..."
+        value={content}
+        onChangeText={setContent}
+        multiline
+        numberOfLines={10}
+      />
+      <Button title="Publicar" onPress={handleCreateStory} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    padding: 10,
+    marginBottom: 10,
+    width: '100%',
+  },
+  textArea: {
+    borderColor: 'gray',
+    borderWidth: 1,
+    padding: 10,
+    marginBottom: 10,
+    width: '100%',
+    textAlignVertical: 'top',
+  },
+});
+
+export default CreateStoryScreen;
+
+3. frontend/screens/SafeZoneChatScreen.js:
+
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, FlatList } from 'react-native';
+import io from 'socket.io-client'; // Importe a biblioteca Socket.IO
+
+const SafeZoneChatScreen = ({ route }) => {
+  const { groupId } = route.params;
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const socketRef = useRef(null);
+
+  useEffect(() => {
+    socketRef.current = io('http://localhost:3000'); // Conecte ao servidor Socket.IO
+
+    socketRef.current.on('connect', () => {
+      console.log('Conectado ao servidor Socket.IO');
+      socketRef.current.emit('joinGroup', groupId); // Envia o ID do grupo para o servidor
+    });
+
+    socketRef.current.on('message', message => {
+      setMessages(prevMessages => [...prevMessages, message]);
+    });
+
+    return () => {
+      socketRef.current.disconnect(); // Desconecta ao sair da tela
+    };
+  }, []);
+
+  const handleSendMessage = () => {
+    if (newMessage.trim() !== '') {
+      const message = {
+        groupId,
+        sender: 'SeuNomeDeUsuário', // Substitua pelo nome do usuário logado
+        text: newMessage
+      };
+      socketRef.current.emit('sendMessage', message);
+      setNewMessage('');
+    }
+  };
+
+  const renderMessage = ({ item }) => (
+    <View style={styles.messageItem}>
+      <Text style={styles.messageSender}>{item.sender}:</Text>
+      <Text>{item.text}</Text>
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={messages}
+        renderItem={renderMessage}
+        keyExtractor={(item, index) => index.toString()}
+        inverted
+      />
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Digite sua mensagem..."
+          value={newMessage}
+          onChangeText={setNewMessage}
+        />
+        <Button title="Enviar" onPress={handleSendMessage} />
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 10,
+  },
+  messageItem: {
+    padding: 10,
+    margin: 5,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+  },
+  messageSender: {
+    fontWeight: 'bold',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 5,
+  },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginRight: 10,
+  },
+});
+
+export default SafeZoneChatScreen;
+
+4. Adaptação do backend/server.js:
+
+// ... (código anterior)
+
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
+
+// ... (código para rotas e conexão com o MongoDB)
+
+io.on('connection', (socket) => {
+  console.log('Usuário conectado ao Socket.IO');
+
+  socket.on('joinGroup', (groupId) => {
+    socket.join(groupId); 
+    console.log(`Usuário entrou no grupo: ${groupId}`);
+  });
+
+  socket.on('sendMessage', (message) => {
+    io.to(message.groupId).emit('message', message); 
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Usuário desconectado do Socket.IO');
+  });
+});
+
+http.listen(port, () => {
+    console.log(`Servidor iniciado na porta ${port}`);
+});
+
+Parte 17: Sistema de Recompensas
+
+1. backend/models/User.js (Adicione o campo points):
+
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+    // ... outros campos do perfil
+    points: { type: Number, default: 0 }
+});
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
+Use code with caution.
+JavaScript
+2. Lógica para adicionar pontos (exemplo no CourseController.js):
+// ... (código anterior)
+
+exports.completeCourse = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const courseId = req.params.id;
+
+    // ... lógica para verificar se o usuário completou o curso
+
+    // Adiciona pontos ao usuário
+    const user = await User.findByIdAndUpdate(userId, { $inc: { points: 10 } }, { new: true }); // Adiciona 10 pontos
+
+    res.status(200).json({ message: 'Curso concluído com sucesso! Você ganhou 10 pontos!', user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao concluir o curso' });
+  }
+};
+
+Próximos Passos:
+Implementar telas para:
+Editar histórias (EditStoryScreen.js).
+Detalhes de vagas (JobDetailsScreen.js), mentores (MentorDetailsScreen.js) e histórias (StoryDetailsScreen.js).
+Eventos (EventsScreen.js) com tela de detalhes (EventDetailsScreen.js).
+Notificações (NotificationsScreen.js).
+Criar a lógica para o sistema de badges (defina os critérios e implemente no backend).
+Exibir os pontos e badges no perfil do usuário no frontend.
+Realizar testes abrangentes (unitários e de integração) para garantir a qualidade do código.
+Preparar o app para deploy (backend e frontend).
+Observações:
+Adapte o código e os nomes dos componentes de acordo com a estrutura do seu projeto.
+Implemente a lógica de autenticação para proteger as rotas que exigem login.
+Utilize uma biblioteca de gerenciamento de estado (ex: Redux, Context API) para lidar com os dados do aplicativo no frontend.
+
+
+Dando continuidade ao desenvolvimento do nosso aplicativo, vamos nos concentrar na criação das telas restantes no frontend e na implementação da lógica para o sistema de badges.
+Parte 18: Frontend (React Native) - Telas Adicionais
+
+1. frontend/screens/EditStoryScreen.js:
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const EditStoryScreen = ({ route, navigation }) => {
+  const { storyId } = route.params;
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+
+  useEffect(() => {
+    const fetchStory = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const response = await axios.get(`http://localhost:3000/api/stories/${storyId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setTitle(response.data.title);
+        setContent(response.data.content);
+      } catch (error) {
+        console.error('Erro ao buscar história:', error);
+        Alert.alert('Erro', 'Não foi possível carregar a história.');
+      }
+    };
+
+    fetchStory();
+  }, []);
+
+  const handleUpdateStory = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      await axios.put(`http://localhost:3000/api/stories/${storyId}`, { title, content }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      Alert.alert('Sucesso', 'História atualizada com sucesso!');
+      navigation.navigate('Community');
+    } catch (error) {
+      console.error('Erro ao atualizar história:', error);
+      Alert.alert('Erro', error.response.data.message || 'Erro ao atualizar história.');
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Editar História</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Título"
+        value={title}
+        onChangeText={setTitle}
+      />
+      <TextInput
+        style={styles.textArea}
+        placeholder="Compartilhe sua história..."
+        value={content}
+        onChangeText={setContent}
+        multiline
+        numberOfLines={10}
+      />
+      <Button title="Salvar" onPress={handleUpdateStory} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  // ... (estilos iguais ao CreateStoryScreen)
+});
+
+export default EditStoryScreen;
+
+2. frontend/screens/JobDetailsScreen.js:
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Linking, ScrollView } from 'react-native';
+import axios from 'axios';
+
+const JobDetailsScreen = ({ route }) => {
+  const { jobId } = route.params;
+  const [job, setJob] = useState(null);
+
+  useEffect(() => {
+    const fetchJob = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/api/jobs/${jobId}`); // Substitua pelo endereço da sua API
+        setJob(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar detalhes da vaga:', error);
+      }
+    };
+    fetchJob();
+  }, []);
+
+  if (!job) {
+    return (
+      <View style={styles.container}>
+        <Text>Carregando detalhes da vaga...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>{job.title}</Text>
+      <Text style={styles.company}>{job.company} - {job.location}</Text>
+      <Text style={styles.description}>{job.description}</Text>
+      <Text style={styles.applyLink} onPress={() => Linking.openURL(job.applyLink)}>
+        Candidate-se aqui
+      </Text>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  company: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  description: {
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  applyLink: {
+    color: 'blue',
+    fontSize: 18,
+    textDecorationLine: 'underline',
+  },
+});
+
+export default JobDetailsScreen;
+
+3. frontend/screens/MentorDetailsScreen.js, frontend/screens/StoryDetailsScreen.js, frontend/screens/EventsScreen.js e frontend/screens/EventDetailsScreen.js:
+A estrutura dessas telas será similar às telas CourseDetailsScreen.js e JobDetailsScreen.js, adaptando os campos e estilos de acordo com os dados de cada seção.
+Lembre-se de buscar os dados da API usando o ID recebido pela navegação (route.params.id) e exibir as informações na tela.
+
+4. frontend/screens/NotificationsScreen.js:
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const NotificationsScreen = () => {
+  const [notifications, setNotifications] = useState([]);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const userId = // Obtenha o ID do usuário a partir do token
+        const response = await axios.get(`http://localhost:3000/api/notifications/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setNotifications(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar notificações:', error);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
+  const renderItem = ({ item }) => (
+    <View style={styles.notificationItem}>
+      <Text style={styles.notificationText}>{item.content}</Text>
+      {/* Adicione lógica para marcar a notificação como lida */}
+    </View>
+  );
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>Notificações</Text>
+      <FlatList
+        data={notifications}
+        renderItem={renderItem}
+        keyExtractor={item => item._id}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  notificationItem: {
+    padding: 15,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  notificationText: {
+    fontSize: 16,
+  },
+});
+
+export default NotificationsScreen;
+
+Parte 19: Sistema de Badges (Backend)
+1. backend/models/User.js (Adicione o campo badges):
+
+const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+    // ... outros campos do perfil
+    points: { type: Number, default: 0 },
+    badges: [{ type: String }] // Array para armazenar os nomes dos badges conquistados
+});
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
+Use code with caution.
+JavaScript
+2. Lógica para conceder badges (exemplo no CourseController.js):
+// ... (código anterior)
+
+const BADGE_COURSE_COMPLETION = 'Estudiosa'; 
+
+exports.completeCourse = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const courseId = req.params.id;
+
+    // ... lógica para verificar se o usuário completou o curso
+
+    // Adiciona pontos ao usuário
+    const user = await User.findByIdAndUpdate(userId, { $inc: { points: 10 } }, { new: true }); 
+
+    // Adiciona o badge (se ainda não tiver)
+    if (!user.badges.includes(BADGE_COURSE_COMPLETION)) {
+      user.badges.push(BADGE_COURSE_COMPLETION); 
+      await user.save();
+    }
+
+    res.status(200).json({ 
+      message: 'Curso concluído com sucesso! Você ganhou 10 pontos e o badge "Estudiosa"!', 
+      user 
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao concluir o curso' });
+  }
+};
+
+3. Implemente a lógica para outros badges em controllers relevantes:
+
+Crie constantes para cada tipo de badge (ex: BADGE_FIRST_STORY, BADGE_MENTOR_CONNECTION).
+Defina os critérios para conceder cada badge (ex: completar 5 cursos, se conectar com um mentor, etc.).
+Atualize os controllers para adicionar badges ao usuário quando os critérios forem atingidos.
+
+Parte 20: Próximos Passos
+
+Exibir Pontos e Badges no Frontend:
+Atualize o ProfileScreen.js para exibir os pontos e badges do usuário.
+Crie componentes visuais para os badges.
+Testes:
+Crie testes para os controllers, services e componentes do frontend.
+Deploy:
+Prepare o backend e o frontend para deploy.
+Escolha um serviço de hospedagem (ex: Heroku, AWS, Firebase) e siga as instruções para publicar o aplicativo.
+
+Finalizando o Desenvolvimento do "HerTech & Game"
+
+Estamos chegando à reta final do desenvolvimento do nosso app! Nesta fase, focaremos na exibição dos pontos e badges no perfil do usuário, na implementação de testes abrangentes e na preparação do aplicativo para deploy.
+
+Parte 21: Frontend (React Native) - Exibindo Pontos e Badges
+
+1. frontend/screens/ProfileScreen.js:
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const ProfileScreen = () => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        const response = await axios.get('http://localhost:3000/api/users/profile', { // Substitua pela rota de perfil
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setUser(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar perfil do usuário:', error);
+      }
+    };
+    fetchUserProfile();
+  }, []);
+
+  if (!user) {
+    return (
+      <View style={styles.container}>
+        <Text>Carregando perfil...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        {/* Adicione a imagem de perfil do usuário aqui */}
+        <Text style={styles.username}>{user.email}</Text>
+        <View style={styles.pointsContainer}>
+          <Text style={styles.pointsLabel}>Pontos:</Text>
+          <Text style={styles.points}>{user.points}</Text>
+        </View>
+      </View>
+
+      {/* Exibir os badges conquistados */}
+      <View style={styles.badgesContainer}>
+        {user.badges.map((badge, index) => (
+          <View key={index} style={styles.badgeItem}>
+            <Text style={styles.badgeText}>{badge}</Text>
+          </View>
+        ))}
+      </View>
+
+      {/* ... outras informações do perfil */}
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  username: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  pointsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  pointsLabel: {
+    fontSize: 18,
+    marginRight: 5,
+  },
+  points: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  badgesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  badgeItem: {
+    backgroundColor: '#eee',
+    padding: 10,
+    margin: 5,
+    borderRadius: 20,
+  },
+  badgeText: {
+    fontSize: 16,
+  },
+});
+
+export default ProfileScreen;
+content_copy
+
+
+2. Criando componentes visuais para os badges:
+
+Crie componentes React Native para cada tipo de badge.
+
+Utilize ícones, cores e estilos para representar visualmente cada badge.
+
+Exiba os componentes dos badges dentro do ProfileScreen.js, de acordo com os badges presentes no array user.badges.
+
+Parte 22: Testes Abrangentes
+
+1. Testes Unitários (Backend):
+
+Crie testes unitários para cada função dos controllers (ex: createJob, getJobById, updateJob, etc.).
+
+Utilize um framework de testes como Jest ou Mocha.
+
+Teste a lógica de cada função, garantindo que ela se comporte como esperado em diferentes cenários.
+
+Exemplo (usando Jest):
+
+const JobController = require('../controllers/JobController');
+const Job = require('../models/Job');
+
+jest.mock('../models/Job'); // Simula o modelo Job para os testes
+
+describe('JobController', () => {
+  describe('createJob', () => {
+    it('deve criar uma nova vaga de emprego com sucesso', async () => {
+      const req = {
+        body: {
+          title: 'Desenvolvedor(a) Front-End',
+          // ... outros campos da vaga
+        }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
+
+      Job.create.mockResolvedValue({
+        // ... dados da vaga criada
+      });
+
+      await JobController.createJob(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(201);
+      expect(res.json).toHaveBeenCalledWith({ 
+        message: 'Vaga criada com sucesso', 
+        job: { 
+          // ... dados da vaga criada 
+        } 
+      });
+    });
+
+    // ... outros testes para cenários de erro, validações, etc.
+  });
+
+  // ... testes para outras funções do JobController
+});
+content_copy
+
+
+2. Testes de Integração (Backend e Frontend):
+
+Teste a comunicação entre o frontend e o backend, garantindo que as requisições e respostas estejam corretas.
+
+Utilize ferramentas como Supertest (para Node.js) ou Cypress (para frontend web).
+
+Teste os fluxos de usuário, simulando ações como login, cadastro, criação de grupos, etc.
+
+3. Testes de Usabilidade (Frontend):
+
+Realize testes com usuárias reais para avaliar a usabilidade do app.
+
+Observe como as usuárias navegam, interagem com as funcionalidades e se conseguem realizar as tarefas desejadas.
+
+Colete feedback para identificar áreas de melhoria na interface e na experiência do usuário.
+
+Parte 23: Deploy do Aplicativo
+
+1. Backend (Node.js):
+
+Escolha um serviço de hospedagem como Heroku, AWS, DigitalOcean, etc.
+
+Configure o ambiente de produção (variáveis de ambiente, banco de dados, etc.).
+
+Utilize um sistema de controle de versão (Git) para gerenciar o código.
+
+Siga as instruções da plataforma de hospedagem para realizar o deploy da API.
+
+2. Frontend (React Native):
+
+Android:
+
+Gere o APK (Android Package Kit) do aplicativo.
+
+Crie uma conta de desenvolvedor na Google Play Store.
+
+Publique o APK na Play Store.
+
+iOS:
+
+Gere o IPA (iOS App Store Package) do aplicativo.
+
+Crie uma conta de desenvolvedor na Apple App Store.
+
+Publique o IPA na App Store.
+
+3. Documentação:
+
+Crie uma documentação completa da API, descrevendo os endpoints, métodos HTTP, parâmetros e exemplos de uso.
+
+Documente o código do frontend, explicando a estrutura do projeto, os componentes e a lógica do aplicativo.
+
+Com estas etapas, você estará pronto para finalizar o desenvolvimento e lançar o "HerTech & Game" para o mundo!
+
+Lembre-se de que este é um guia, e a implementação completa do app pode variar de acordo com suas necessidades e tecnologias escolhidas.
+
+Mantenha-se focado, siga as boas práticas de desenvolvimento e em breve você estará impactando positivamente a vida de mulheres no universo dos games e tecnologia!
+
+
+Funcionalidades do "HerTech & Game": Status do Desenvolvimento
+
+Vamos analisar o status do desenvolvimento do app "HerTech & Game", identificando as funcionalidades com código pronto e as que ainda precisam ser implementadas:
+
+Funcionalidades com Código Pronto (Backend e Frontend):
+
+Autenticação:
+
+Registro de usuárias (/register).
+
+Login de usuárias (/login).
+
+Middleware de autenticação para proteger rotas.
+
+Grupos (Safe Zone):
+
+Criação de grupos (/groups).
+
+Listagem de grupos.
+
+Visualização de detalhes do grupo.
+
+Chat em tempo real dentro dos grupos (Socket.IO).
+
+Cursos:
+
+Criação de cursos (/courses).
+
+Listagem de cursos.
+
+Visualização de detalhes do curso.
+
+Jobs (Vagas de Emprego):
+
+Criação de vagas (/jobs).
+
+Listagem de vagas.
+
+Visualização de detalhes da vaga.
+
+Mentores:
+
+Criação de perfil de mentor (/mentors).
+
+Listagem de mentores.
+
+Visualização de detalhes do mentor.
+
+Histórias:
+
+Criação de histórias (/stories).
+
+Listagem de histórias.
+
+Visualização de detalhes da história.
+
+Edição de histórias (/stories/:id).
+
+Eventos:
+
+Criação de eventos (/events).
+
+Listagem de eventos.
+
+Visualização de detalhes do evento.
+
+Moderação de Conteúdo (Backend):
+
+Serviço de análise de sentimento (Google Cloud Natural Language API) integrado na criação de histórias.
+
+Notificações (Backend):
+
+Serviço de envio de notificações (Firebase Cloud Messaging) configurado.
+
+Envio de notificações na criação de cursos e eventos.
+
+Sistema de Pontos (Backend):
+
+Campo points adicionado ao modelo de usuário.
+
+Lógica para adicionar pontos implementada (exemplo: na conclusão de cursos).
+
+Tela de Perfil (Frontend):
+
+Exibe email, pontos e badges do usuário.
+
+Funcionalidades que Faltam Implementar:
+
+Backend:
+
+Sistema de Badges:
+
+Criar lógica para conceder badges em outros controllers (ex: Jobs, Mentors, Stories, etc.).
+
+Definir critérios para cada badge.
+
+Notificações:
+
+Integrar o envio de notificações em outras ações relevantes (ex: novas vagas, novos mentores, novas histórias, etc.).
+
+Criar rotas para gerenciar as notificações do usuário (ex: marcar como lida, deletar).
+
+Funcionalidades de CRUD Completas:
+
+Implementar as funções de atualização e exclusão para Jobs, Mentors, Stories e Events.
+
+Frontend:
+
+Telas:
+
+Detalhes de Mentores (MentorDetailsScreen.js).
+
+Detalhes de Histórias (StoryDetailsScreen.js).
+
+Tela de Eventos (EventsScreen.js) e Detalhes de Eventos (EventDetailsScreen.js).
+
+Tela de Notificações (NotificationsScreen.js) com interação (marcar como lida, etc.).
+
+Tela para solicitar mentoria.
+
+Tela para candidatar-se a vagas.
+
+Componentes Visuais de Badges:
+
+Criar componentes para cada tipo de badge, com ícones e estilos.
+
+Sistema de Recompensas (Frontend):
+
+Implementar a lógica para exibir os badges conquistados pelo usuário na tela de Perfil.
+
+Criar um componente visual para exibir o progresso do usuário em relação aos badges (ex: barra de progresso).
+
+Integração Completa com Notificações:
+
+Implementar a lógica para receber e exibir notificações no frontend (utilizando Firebase Cloud Messaging).
+
+Funcionalidade de Chat Completa:
+
+Adicionar moderação de conteúdo no chat (utilizando o serviço contentModeration.js).
+
+Implementar interface para criar e gerenciar grupos na Safe Zone.
+
+Testes:
+
+Implementar testes unitários e de integração para o backend e frontend, cobrindo todas as funcionalidades.
+
+Deploy:
+
+Publicar a API backend e o aplicativo mobile.
+
+Próximos Passos:
+
+Priorizar as funcionalidades que faltam implementar, com base no feedback das usuárias e na sua estratégia de lançamento.
+
+Continuar o desenvolvimento, implementando as funcionalidades restantes e os testes.
+
+Refinar a interface do usuário e a experiência do usuário (UX) com base em testes de usabilidade.
+
+Preparar o app para o lançamento, incluindo a criação de materiais de marketing e divulgação.
+
+Com este guia, você terá uma visão clara do progresso do desenvolvimento do "HerTech & Game"!
+
+Lembre-se: a construção de um aplicativo completo é uma maratona, não uma corrida de velocidade. Continue com foco, dedicação e em breve você estará transformando a indústria de games e tecnologia!
+
