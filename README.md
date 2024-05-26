@@ -5,8 +5,6 @@
 
 **Uma plataforma inovadora para empoderar mulheres no mundo dos games e tecnologia!**
 
-[![HerTech & Game Logo](link-para-imagem-do-logo)](link-para-o-seu-site)
-
 **Sobre o Projeto**
 
 O "HerTech & Game" é um aplicativo e plataforma web dedicada a criar um ambiente seguro, inclusivo e empoderador para mulheres que amam games e tecnologia.  A plataforma oferece recursos para conectar jogadoras, promover o aprendizado, impulsionar carreiras e celebrar a representatividade feminina na indústria.
@@ -27,25 +25,6 @@ O "HerTech & Game" é um aplicativo e plataforma web dedicada a criar um ambient
 * **Autenticação:** Firebase Authentication
 * **Notificações:** Firebase Cloud Messaging
 * **Moderação de Conteúdo:** Google Cloud Natural Language API
-
-**Guia de Instalação**
-
-**Backend:**
-
-1. Clone o repositório: `git clone https://github.com/seu-usuario/hertech-game.git`
-2. Acesse a pasta do backend: `cd hertech-game/backend`
-3. Instale as dependências: `npm install`
-4. Configure as variáveis de ambiente (banco de dados, Firebase, etc.).
-5. Inicie o servidor: `npm start`
-
-**Frontend:**
-
-1. Acesse a pasta do frontend: `cd hertech-game/frontend`
-2. Instale as dependências: `npm install`
-3. Configure o ambiente React Native.
-4. Inicie o aplicativo: `npx react-native run-android` ou `npx react-native run-ios`
-
-
 
 
 **Licença**
