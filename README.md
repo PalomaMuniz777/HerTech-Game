@@ -1,8 +1,6 @@
 
 "HerTech &amp; Game" é mais que um app, é um ecossistema completo. Aqui, as mulheres se encontram!
 
- HerTech & Game
-
 **Uma plataforma inovadora para empoderar mulheres no mundo dos games e tecnologia!**
 
 **Sobre o Projeto**
